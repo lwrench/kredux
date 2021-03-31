@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+## redux
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 基本用法
+- 通过`createStore`创建`store`
+- 在创建`store`时需传入纯函数`reducer`
+- `reducer`接收两个参数：`state`和`action`
+- 在需要用到redux的组件中引入`store`
+- 编写改变状态的方法，通过`store.dispatch()`方法来派发`action`
+- 被派发的`action`会转发给`reducer`，`reducer`会通过`action`来更新`state`
+- 组件可以通过`store.getState()`方法来获取状态
+- 通过`store.subscribe()`方法来订阅`state`的更新，每次状态改变都会触发回调事件
 
-## Available Scripts
+用到`redux`的组件
+```js
+import React, { Component } from 'react'
+import store from "../store"
 
-In the project directory, you can run:
+export class ReduxPage extends Component {
+  componentDidMount() {
+    store.subscribe(() => {
+      this.forceUpdate()
+    })
+  }
+  add = () => {
+    store.dispatch({type: "ADD", payload: 100})
+  }
+  
+  render() {
+    return (
+      <div>
+        <h3>ReduxPage</h3>
+        <div>{store.getState()}</div>
+        <button onClick={this.add}>add</button>
+      </div>
+    )
+  }
+}
 
-### `yarn start`
+export default ReduxPage
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+创建`store`和`reducer`
+```js
+import { createStore } from "../kredux";
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+const reducer = (state = 0, { type, payload }) => {
+  switch (type) {
+    case "ADD":
+      return state + payload
+    default:
+      return state
+  }
+};
 
-### `yarn test`
+const store = createStore(reducer);
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+export default store;
+```
