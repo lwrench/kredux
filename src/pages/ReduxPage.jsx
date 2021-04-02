@@ -3,9 +3,14 @@ import store from "../store"
 
 export class ReduxPage extends Component {
   componentDidMount() {
-    store.subscribe(() => {
+    this.unsubscribe = store.subscribe(() => {
       this.forceUpdate()
     })
+  }
+  componentWillUnmount() {
+    if (this.unsubscribe) {
+      this.unsubscribe()
+    }
   }
   add = () => {
     store.dispatch({type: "ADD", payload: 100})

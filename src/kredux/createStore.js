@@ -1,5 +1,5 @@
 export default function createStore(reducer) {
-  let currentState = null;
+  let currentState;
   let currentListeners = [];
 
   function getState() {
@@ -7,14 +7,16 @@ export default function createStore(reducer) {
   }
 
   function dispatch(action) {
-    console.log(111);
     currentState = reducer(currentState, action);
     currentListeners.forEach((listener) => listener());
-    console.log(222);
   }
 
   function subscribe(listener) {
     currentListeners.push(listener);
+
+    return () => {
+      currentListeners.filter(now => (now === listener))
+    }
   }
 
   dispatch({type: "init"})
