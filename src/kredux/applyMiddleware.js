@@ -6,11 +6,12 @@ const appleMiddleware = (...middlewares) => {
 
     const midApi = {
       getState: store.getState,
+      // 不同的中间件触发dispatch会导致混乱，所以采用箭头函数包裹
       dispatch: (action, ...args) => (dispatch(action, ...args))
     }
-
+    // 中间件在运行的时候会需要getState和dispatch，通过这种方式以参数的方式传入
     const middlewareChain = middlewares.map(middleware => middleware(midApi))
-
+    // 依此执行中间件以达到修改原生dispatch的作用，并返回新的dispatch
     dispatch = compose(...middlewareChain)(dispatch)
 
     return {
