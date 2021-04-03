@@ -1,4 +1,6 @@
-import { createStore } from "../kredux";
+import { createStore, appleMiddleware } from "../kredux";
+import thunk from 'redux-thunk'
+import logger from 'redux-logger'
 
 const reducer = (state = 0, { type, payload }) => {
   switch (type) {
@@ -9,6 +11,6 @@ const reducer = (state = 0, { type, payload }) => {
   }
 };
 
-const store = createStore(reducer);
+const store = createStore(reducer, appleMiddleware(thunk, logger));
 
 export default store;
